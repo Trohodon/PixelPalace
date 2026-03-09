@@ -1,0 +1,232 @@
+PIXELPALACE - CODEX STARTUP CONTEXT
+Updated: 2026-03-08
+Project Root: C:\Users\Isaak\source\repos\PixelPalace\PixelPalace
+
+==================================================
+1) PURPOSE OF THIS FILE
+==================================================
+This file is the startup handoff snapshot for future Codex chats.
+It documents:
+- user working style and priorities
+- current architecture and build status
+- implemented feature set
+- known risks/issues to check first
+- next roadmap priorities
+
+Always read this first before making changes.
+
+==================================================
+2) USER PREFERENCES (IMPORTANT)
+==================================================
+User intent and style preferences from chats:
+- Wants an ambitious pixel editor inspired by Aseprite-level workflows.
+- Prefers aggressive execution: implement first, minimal back-and-forth.
+- Expects proactive iteration and deep passes, not tiny isolated tweaks.
+- Cares about UI polish, but usability and unclipped controls are non-negotiable.
+- Wants playful styling across the whole app when it does not harm usability.
+- Wants robust practical workflows (shortcuts, fast frame/layer operations).
+- Explicitly approved autonomous execution and permission assumptions.
+
+Specific recurring asks:
+- Avoid clipping at different DPI/scales and narrow widths.
+- Preserve startup/home flow with New/Open/Recents.
+- Keep mouse side-button shortcuts working.
+
+==================================================
+3) CURRENT ARCHITECTURE
+==================================================
+Project remains foldered into Core/ and Gui/.
+
+Key files (current):
+- Core\Models\PixelDocument.cs
+- Core\Serialization\PixelProjectSerializer.cs
+- Core\Storage\RecentProjectsStore.cs
+- Core\Storage\AutosaveRecoveryStore.cs
+- Gui\MainForm.cs
+- Gui\Controls\PixelCanvas.cs
+- Gui\Controls\PlayfulControls.cs
+- Gui\Controls\HsvColorPicker.cs
+- Gui\Dialogs\NewDocumentDialog.cs
+- Program.cs
+
+Build status:
+- dotnet build: SUCCESS (0 errors, 0 warnings)
+
+Runtime notes:
+- Build lock errors still occur if PixelPalace.exe is running.
+- Stop PixelPalace process and rebuild when apphost copy lock occurs.
+- Drag/drop required explicit STA entry point; Program.cs now uses [STAThread] Main.
+
+==================================================
+4) IMPLEMENTED FEATURES (CURRENT)
+==================================================
+A) Startup/home and project persistence
+- Home/start screen with New/Open/Recents.
+- Recent projects persisted to LocalAppData.
+- Save/load .ppal/json project serialization.
+- PNG export for frame and sprite sheet.
+
+B) Canvas editing core
+- Tools: Pencil, Eraser, Fill, Picker, Line, RectSelect.
+- Panning, zoom-at-cursor, fit-to-view, center canvas.
+- Onion skin, grid, hover preview.
+- Brush size (1-8) for paint/erase/line.
+
+C) Selection and transform workflow
+- Rectangular selection create/move.
+- Clipboard copy/cut/paste for selection.
+- Internal clipboard fallback + resilient Windows clipboard handling.
+- Paste from external clipboard image data.
+- Transform ops: flip horizontal, flip vertical, rotate 90 CW.
+- Transform ops now include rotate 90 CCW.
+- Selection shortcuts: Esc clear, arrows nudge, Shift+arrows large nudge.
+- Animated marching-ants selection outline.
+
+D) Timeline and animation workflow
+- Frame thumbnails timeline.
+- Add/duplicate/delete frame.
+- Multi-select frames in timeline.
+- Duplicate selected frames / delete selected frames.
+- Drag-drop reorder for selected frame block.
+- Move selected frames left/right actions (buttons + Ctrl+Alt+Left/Right).
+- Playback controls with Loop and Ping-Pong.
+- FPS + per-frame duration controls.
+- Playback range start/end controls.
+- Playback now prefers selected frames when multiple are selected.
+- Playback range end auto-extends when frame count grows and end was at tail.
+
+E) Layers
+- Add/duplicate/delete layer.
+- Move layer up/down.
+- Layer visibility toggles.
+
+F) Palette and color workflows
+- Main palette + recent colors strip.
+- Add current color to favorites palette.
+- Sort favorites by hue.
+- Primary/secondary color swap.
+- Replace Primary->Secondary across layer/frame/document.
+- New HSV color grid chooser in palette panel.
+- Hex color input supports #RRGGBB and #AARRGGBB.
+- Color dialog picker integrated.
+- Recent colors now update only from actual paint commits on canvas (not color picking).
+
+G) Undo/redo and safety
+- Snapshot-based undo/redo implemented.
+- Shortcuts: Ctrl+Z undo, Ctrl+Shift+Z redo.
+- Menu/toolbar undo-redo entries.
+- Crash-safe autosave snapshots.
+- Startup recovery prompt for autosave snapshot restore/discard.
+
+H) UI/stability hardening
+- Multiple clipping mitigations via wrapped/scrollable action rows.
+- Timeline/animation controls expanded for better narrow-width/DPI behavior.
+- Palette action area clipping mitigation.
+- Bottom-right palette chooser expanded into dedicated card section.
+- Main editor fixed-size rows/columns now scale by DPI to reduce clipping at 125%/150%.
+- Timeline thumbnail size now scales by DPI.
+
+==================================================
+5) KNOWN ISSUES / RISKS TO CHECK FIRST
+==================================================
+1. DPI/layout clipping is improved but not fully closed
+- Must still test at 100/125/150% and narrow window widths.
+- Focus checks: timeline control row, palette tabs, layer action rows.
+- Recent pass added DPI-scaled sizing for main rows/columns and panels; verify no regressions at 1120px+ widths.
+
+2. Undo/redo is snapshot-based, not command-granular
+- Works functionally but can be memory-heavy on large docs.
+- Stroke grouping and operation-specific history compression are not done.
+
+3. Selection transform depth is partial
+- 90 CW and 90 CCW now exist.
+- No scale/skew/rotate interactive handles yet.
+
+4. Playback UX semantics can still be confusing
+- Playback has two modes of sequencing (selected frames vs range).
+- Consider explicit UI indicator of active playback source.
+
+5. Palette management is still basic
+- No palette preset import/export yet.
+- No palette lock mode.
+
+==================================================
+6) PRIORITIZED ROADMAP (UPDATED)
+==================================================
+Priority 0: Layout + stability closure
+- Full DPI sweep pass and clipping elimination across all tabs/panes.
+- Add per-pane minimum layout constraints where still needed.
+- Strengthen app shutdown/startup autosave edge-case handling.
+
+Priority 1: Undo/redo quality pass
+- Move from pure snapshot behavior to command-grouped history where possible.
+- Group continuous stroke drags into single history units.
+- Optimize history memory footprint for large documents.
+
+Priority 2: Finish selection/transform depth
+- Rotate 90 CCW complete.
+- Add optional selection bounding box handles (move/transform affordances).
+- Add explicit selection info (size/position) in inspector.
+
+Priority 3: Timeline workflow depth
+- Multi-select move left/right buttons + keyboard shortcuts complete.
+- Duplicate/delete range UX polish with clearer selection feedback.
+- Optional frame tags/labels/colors.
+
+Priority 4: Palette power tools
+- Save/load palette presets.
+- Palette lock mode.
+- Quantize/import image to current palette.
+
+Priority 5: Aseprite-like productivity tools
+- Mirror drawing X/Y.
+- Tile mode preview.
+- Fill mode controls (contiguous/global toggle).
+
+Priority 6: File format/versioning
+- Formalize .ppal schema versioning.
+- Add migration path for future schema changes.
+- Sprite sheet import with slicing options.
+
+==================================================
+7) NEXT-CHAT CHECKLIST
+==================================================
+At start of a new Codex chat:
+1. Read this file.
+2. Run dotnet build in project root.
+3. Run app and smoke test:
+   - Home page actions work (New/Open/Recents)
+   - Tool rail is unclipped
+   - Timeline controls are unclipped
+   - Palette tab controls are unclipped
+   - Selection flow works (M, drag, copy/cut/paste, flip/rotate)
+   - Undo/redo shortcuts work (Ctrl+Z / Ctrl+Shift+Z)
+   - Playback works for selected frames and range playback
+   - Mouse XButton1/XButton2 shortcuts work
+4. Continue from roadmap priorities above unless user redirects.
+
+==================================================
+8) IMPLEMENTATION GUIDELINES
+==================================================
+- Keep architecture split Core vs Gui.
+- Prefer explicit sizing/overflow-safe layouts for DPI-sensitive UI areas.
+- Validate workflows end-to-end, not just compile.
+- If UI style conflicts with usability, prioritize usability.
+- Keep edits incremental and testable.
+- If build lock occurs, stop running PixelPalace process and rebuild.
+
+==================================================
+9) QUICK COMMANDS
+==================================================
+Build:
+- dotnet build
+
+Run:
+- dotnet run
+
+If exe lock build error appears:
+- Stop PixelPalace process, then rerun build.
+
+==================================================
+END OF STARTUP CONTEXT
+==================================================

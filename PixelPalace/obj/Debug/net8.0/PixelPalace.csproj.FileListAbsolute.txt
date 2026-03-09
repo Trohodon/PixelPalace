@@ -1,0 +1,14 @@
+C:\Users\Isaak\source\repos\PixelPalace\PixelPalace\bin\Debug\net8.0\PixelPalace.exe
+C:\Users\Isaak\source\repos\PixelPalace\PixelPalace\bin\Debug\net8.0\PixelPalace.deps.json
+C:\Users\Isaak\source\repos\PixelPalace\PixelPalace\bin\Debug\net8.0\PixelPalace.runtimeconfig.json
+C:\Users\Isaak\source\repos\PixelPalace\PixelPalace\bin\Debug\net8.0\PixelPalace.dll
+C:\Users\Isaak\source\repos\PixelPalace\PixelPalace\bin\Debug\net8.0\PixelPalace.pdb
+C:\Users\Isaak\source\repos\PixelPalace\PixelPalace\obj\Debug\net8.0\PixelPalace.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Isaak\source\repos\PixelPalace\PixelPalace\obj\Debug\net8.0\PixelPalace.AssemblyInfoInputs.cache
+C:\Users\Isaak\source\repos\PixelPalace\PixelPalace\obj\Debug\net8.0\PixelPalace.AssemblyInfo.cs
+C:\Users\Isaak\source\repos\PixelPalace\PixelPalace\obj\Debug\net8.0\PixelPalace.csproj.CoreCompileInputs.cache
+C:\Users\Isaak\source\repos\PixelPalace\PixelPalace\obj\Debug\net8.0\PixelPalace.dll
+C:\Users\Isaak\source\repos\PixelPalace\PixelPalace\obj\Debug\net8.0\refint\PixelPalace.dll
+C:\Users\Isaak\source\repos\PixelPalace\PixelPalace\obj\Debug\net8.0\PixelPalace.pdb
+C:\Users\Isaak\source\repos\PixelPalace\PixelPalace\obj\Debug\net8.0\PixelPalace.genruntimeconfig.cache
+C:\Users\Isaak\source\repos\PixelPalace\PixelPalace\obj\Debug\net8.0\ref\PixelPalace.dll
